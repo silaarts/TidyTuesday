@@ -39,9 +39,7 @@ p <- ggplot(data=trains4, aes(x=departure_station, y=percentage)) +
   scale_fill_manual(values = mycolors)+
   transition_time(year)+
   labs(title="Are you on time? Delays >15 minutes per departure station", 
-       subtitle="Percentage of total number of trips by year: {round(frame_time)}\n", 
-       x="", 
-       y="",  
+       subtitle="Percentage of total number of trips by year: {round(frame_time)}", x="", y="",  
        caption="Source: SNCF OPEN DATA, Plot by @sil_aarts")+ 
   theme_minimal(10) +
   theme(legend.position = "none",

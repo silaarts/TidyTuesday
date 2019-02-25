@@ -31,7 +31,7 @@ trains4$percentage <- (trains4$num_greater_15_min_late/trains4$total_num_trips)*
 nb.cols <- 59
 mycolors <- colorRampPalette(brewer.pal(8, "Dark2"))(nb.cols)
 
-#Create animated graph
+#GGplot with animation
 p <- ggplot(data=trains4, aes(x=departure_station, y=percentage)) + 
   geom_col(aes(fill=departure_station), width = 0.8) + 
   geom_text(aes(label=departure_station), hjust="left", nudge_y = 0.5, size = 3, family="Comic Sans MS") +
@@ -54,6 +54,6 @@ p <- ggplot(data=trains4, aes(x=departure_station, y=percentage)) +
         axis.ticks.y = element_blank())
 p
 
-# Save 
+#Save GGplot animation
 anim_save("Desktop/R/TidyTuesday/French_delays.gif")
 

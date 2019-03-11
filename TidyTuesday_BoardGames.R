@@ -33,8 +33,6 @@ anti_join(get_stopwords(language="en", source="snowball"))
 #Do some cleaning!
 games_des3$word <- removeNumbers(games_des3$word, ucp = FALSE)
 games_des3$word <- str_replace(games_des3$word, ";", "")
-games_des4 <- subset(games_des4, trimws(word) !="s")
-games_des4 <- subset(games_des4, trimws(word) !="x")
 games_des4 <- games_des3[games_des3$word!="",]
 
 #Frequency words

@@ -22,7 +22,7 @@ games_des <- select(games, select="description")
 #Column name
 colnames (games_des) <- c("games")
 
-#Every word one vector
+#Every word, one vector
 games_des2 <- games_des %>% 
   unnest_tokens(word, games) 
 

@@ -39,7 +39,7 @@ games_des4 <- games_des3[games_des3$word!="",]
 
 #Frequency words
 games_des5 <- games_des4 %>% count(word, sort=T)
-sort(games_des6$n)
+sort(games_des5$n)
 
 #Wordcloud
 set.seed(1234)

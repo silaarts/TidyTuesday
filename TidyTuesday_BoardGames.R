@@ -51,7 +51,7 @@ nb.cols <- 9
 mycolors <- colorRampPalette(brewer.pal(8, "Dark2"))(nb.cols)
 
 #Filter (n>1000) 
-p <- games_des6 %>% 
+p <- games_des5 %>% 
   filter (n > 5000) %>%
 #Make GGplot
   ggplot(aes(x = word, y = n)) +

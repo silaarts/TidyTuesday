@@ -44,11 +44,11 @@ set.seed(1234)
 wordcloud(words = games_des5$word, freq = games_des5$n, min.freq = 1,scale=c(2,0.5),
           max.words=50, random.order=FALSE, use.r.layout=FALSE, rot.per=0.35, colors=brewer.pal(8, "Dark2"))
 
-#Make some colors (10 instead of 6 from Dark2)
+#Make some colors (12 instead of 8 from Dark2)
 nb.cols <- 12
 mycolors <- colorRampPalette(brewer.pal(8, "Dark2"))(nb.cols)
 
-#Filter (n>1000) 
+#Filter
 p <- games_des5 %>% 
   filter (n > 5000) %>%
 #Make GGplot

@@ -17,7 +17,6 @@ sort(combined_data$stops_per_year, decreasing=T)
 #Alter stops per year for esthetics plot
 combined_data$stops_per_year <- combined_data$stops_per_year/100
 
-
 #GGplot: scatterplot: search rate by arrest rate
 #Make colors for the states
 nb.cols <- 17
@@ -88,5 +87,3 @@ p5 <- ggplot(combined_data, aes(x=search_rate, y=arrest_rate)) +
 
 #Run it
 p5
-
-

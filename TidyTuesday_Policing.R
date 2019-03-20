@@ -22,9 +22,9 @@ combined_data$stops_per_year <- combined_data$stops_per_year/100
 nb.cols <- 17
 mycolors <- colorRampPalette(brewer.pal(12, "Paired"))(nb.cols)
 
-#Make the plot
+#Make the plot (in my tweet about this plot I used geom_count, however, geom_point gives you all the states)
 p4 <- ggplot(combined_data, aes(x=search_rate, y=arrest_rate)) + 
-  geom_count(aes(col=state, size=stops_per_year)) + 
+  geom_point(aes(col=state, size=stops_per_year)) + 
   xlim(c(0, 0.18)) + 
   labs(subtitle="Stanford Open Policing Project: relating search rate(%) to arrest rate(%)", 
        y="Arrest rate %", 

@@ -1,24 +1,21 @@
 #TidyTuesday
 #Pet names!
 
-
 #Load libraries
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
-library(gganimate)
-library(extrafont)
 library(RColorBrewer)
 library(readr)
 
 #Read file
 seattle_pets <- read.csv2("Desktop/Seattle_Pet.csv", stringsAsFactors=F, header=T)
 
-#Keep only two columns
-pets <- seattle_pets[c(3,5)]
+#Keep only one col> name
+pets <- seattle_pets[c(3)]
 
-#Change colnames
-colnames(pets) <- c("name", "breed")
+#Change colname
+colnames(pets) <- c("name")
 
 #Insert count
 pets2 <- pets %>% count(name, sort=T)
@@ -67,5 +64,6 @@ p <- ggplot(pets5, aes(x = "", y=n , fill = factor(name))) +
       plot.subtitle=element_text(size=18, face='italic')
   )
 
-#Run it
+#Run it!
 p
+

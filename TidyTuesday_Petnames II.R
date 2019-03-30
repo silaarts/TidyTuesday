@@ -20,7 +20,7 @@ colnames(seattle_pets) [c(3,7)] <- c("name", "zip")
 #Data zipcode
 Data(zipcode)
 
-#Marge files
+#Merge files
 zipcode2 <- zipcode %>%
   filter(city=="Seattle")
 seattle_pets2 <- merge(seattle_pets, zipcode2, by.x='zip', by.y='zip')

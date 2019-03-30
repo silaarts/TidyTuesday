@@ -28,7 +28,8 @@ seattle_pets2 <- merge(seattle_pets, zipcode2, by.x='zip', by.y='zip')
 #Filter: where is Wall-E?
 seattle_pets3 <- seattle_pets2 %>%
   filter(name== "Wall-E")
-
+  
+  
 #API key google
 register_google(key = "YOUR KEY HERE")
 
@@ -43,9 +44,12 @@ scale_color_manual(values="yellow")+
     axis.text.x=element_blank(),
     axis.text.y=element_blank(),
     axis.title.x=element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.ticks.y = element_blank(),
     axis.title.y=element_blank())
 
 #Run it
 p
+
 
 

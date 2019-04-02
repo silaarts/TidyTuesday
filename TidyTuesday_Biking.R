@@ -9,7 +9,6 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(ggmap)
-library(zipcode)
 library(ggthemes)
 library(extrafont)
 

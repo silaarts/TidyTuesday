@@ -62,10 +62,10 @@ p <- tennis3 %>%
                     values = c("darkgreen","limegreen", "springgreen"))+
   add_emoji(emoji="1f3be")+
   geom_text(color="black", size=3, family="Helvetica") +
-  labs(title="TidyTuesday: Tennis Grand Slams", 
+  labs(title="TidyTuesday: Female Tennis Grand Slams", 
        subtitle="Age at first Grand Slam title (z-scores)",
        caption="Source: Wikipedia | Plot by: @sil_aarts",
-        y="age in years (z-scores")+
+        y="age in years (z-scores)")+
   theme_light()+
   theme(
     axis.title.x = element_text(size=12, face="bold", family="Times"),
@@ -73,7 +73,7 @@ p <- tennis3 %>%
     axis.text.y = element_text(size=10, face="bold", family="Times"),
     plot.title=element_text(size=20, face="bold", family="Times"),
     plot.subtitle=element_text(size=18, family="Times"),
-    plot.caption=element_text(size=12, family="Times"))+
+    plot.caption=element_text(size=10, family="Times"))+
   ylim(-3,3)+
   coord_flip()
 

@@ -1,6 +1,6 @@
 #TidyTuesday
 #Tennis
-#Grand slams!
+#Grand Slams!
 
 #Load libraries
 library(tidyverse)
@@ -16,11 +16,12 @@ tennis <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tid
 #Delete NA
 tennis2 <- tennis[!is.na(tennis$grand_slam), ]
 
-#Add ID, check data and then >50 is male
+#Add ID, check data and then >48 is male
 tennis2$ID <- seq.int(nrow(tennis2))
 
-#New column
+#Create new column
 tennis2$sex <- NA
+#Loop for male and female
 for (i in 1:nrow(tennis2))
 {
   if (tennis2$ID[i] > 48) { tennis2$sex[i] <- "Male"} else {tennis2$sex="Female"}
@@ -31,9 +32,10 @@ tennis2$age_years <- (tennis2$age/365)
 
 #Make z-scores
 tennis2$age_zscore <- ave(tennis2$age_years, tennis2$sex, FUN=scale)
+#Make a 0/1 variabele
 tennis2$age_groups <- ifelse(tennis2$age_zscore < 0, "below", "above")
 
-#Check what the mean age for Females and Males
+#Check mean age for Females and Male
 tennis2 %>%
   group_by(sex) %>%
   summarise(mean_age= mean(age_years))
@@ -42,7 +44,8 @@ tennis2 %>%
 tennis3 <- tennis2 %>% 
   mutate_if(is.numeric, round, digits = 1)
 
-#If mean age_zscore is around 0.0 (0.05 more or less) > age_groups=mean
+#Oeps, we see that some 0.0 are below and some above. 
+#If mean age_zscore is around 0.0 (0.05 more or less) > age_groups=mean=22.8
 for (i in 1:nrow(tennis3))
 {
   if (tennis3$age_zscore[i] > -0.05 && tennis3$age_zscore[i] < 0.05) { tennis3$age_groups[i] <- "mean"} 

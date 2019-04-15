@@ -17,11 +17,11 @@ women <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidy
 #Make nodes
 nodes <- data.frame(name=c(as.character(women$country), as.character(women$field)) %>% unique())
 
-#Make Id and sources needed for NetworkD3
+#Make Id needed nfor NetworkD3
 women$IDcountry=match(women$country, nodes$name)-1 
 women$IDfield=match(women$field, nodes$name)-1
 
-#Provide group variables
+#Provide group variable
 nodes$ID <- seq.int(nrow(nodes))
 nodes$group <- NA
 for (i in 1:nrow(nodes))

@@ -31,7 +31,10 @@ for (i in 1:nrow(brexit2))
 }
 brexit2$ID <- NULL
 
-#GGplot: Leave right
+#Change date format
+brexit2$date <- as.Date(brexit2$brexit.date, format="%d/%m/%y")
+
+#GGplot: right
 p <- brexit2 %>%
   filter(Choice=="right") %>%
   ggplot(aes(x = date, y = percent)) + 
@@ -50,7 +53,9 @@ p1 <- p + stat_smooth(
   color = "tomato", fill = "red",
   method = "loess")
 
-#GGplot: Leave wrong
+p1
+
+#GGplot: wrong
 p2 <- brexit2 %>%
   filter(Choice=="wrong") %>%
   ggplot(aes(x = date, y = percent)) + 
@@ -68,11 +73,12 @@ p3 <- p2 + stat_smooth(
   color = "tomato", fill = "red",
   method = "loess")
 
+p1
 #Put both plots into one plot
 p4 <- ggdraw() +
     draw_plot(p1+theme(legend.position="none"), 0, 0, 1, 1) +
-    draw_plot(p3+theme(legend.position="none"), 0.5, 0.6, 0.5, 0.4) +
-    draw_plot_label(c("A.Vote Right", "B.Vote Wrong"), c(0.05, 0.55), c(1, 1), size = 10)
+    draw_plot(p3+theme(legend.position="none"), 0.5, 0.6, 0.45, 0.4) +
+    draw_plot_label(c("A.Right", "B.Wrong"), c(0.07, 0.56), c(1, 1), size = 10)
 
 #Run finale plot!
 p4

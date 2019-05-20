@@ -50,7 +50,7 @@ birds6 <- birds5[order(-birds5$count),]
 birds7 <- birds6 %>%
  filter(count > 2300)
 
-#dividie by 1000 for ease of use
+#Divide by 1000 for ease of use
 birds7$count <- birds7$count/1000
 
 #Change colnames

@@ -16,10 +16,10 @@ data1 <- data %>%
   filter(gender=="Female")
 
 #Add a column
-data2["count"] <- 1
+data1["count"] <- 1
 
 #Aggregate: sum winners per category
-data3 <- data2 %>%
+data2 <- data1 %>%
   group_by(gender,category) %>% 
   mutate(count=n())
 
@@ -27,7 +27,7 @@ data3 <- data2 %>%
 mycolors <- c("#330244","#0050B6","#250462","#003E38", "#007067","#56416F")
 
 #GGplot: barchart
-p <- ggplot(data=data3, aes(x=category)) + 
+p <- ggplot(data=data2, aes(x=category)) + 
   geom_bar(aes(fill=category), width = 0.8)+
   scale_fill_manual(values = mycolors)+
   coord_polar()+

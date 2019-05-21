@@ -5,12 +5,10 @@
 #===============================================================================
 
 #Load libraries
-library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(RColorBrewer)
 library(extrafont)
-library(emoGG)
 
 #Load data
 data <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/per-capita-plastic-waste-vs-gdp-per-capita.csv")

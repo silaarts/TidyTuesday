@@ -1,6 +1,6 @@
 #TidyTuesday
 #===============================================================================
-#Plastic waste; waste no more...
+#Mismanaged waste around the worls; waste no more...
 #@sil_aarts
 #===============================================================================
 
@@ -14,7 +14,7 @@ library(extrafont)
 #Load data
 data <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/per-capita-mismanaged-plastic-waste-vs-gdp-per-capita.csv")
 
-#Take only with per capita plastic waste
+#Take only with per capita plastic waste: omit the rest, so leaving only data for 2010
 data1 <- na.omit(data)
 
 #Change colnames for ease of use: per capita plastic waste, kg per person per day | gpd in $
@@ -24,7 +24,7 @@ colnames(data1)[5] <- c("gdp_capita")
 #Order the data
 data2 <- data1[order(-data1$capita_mis),] 
 
-#Make a variabel percentage
+#Make a variabele regarding percentage of Sri Lanka
 data2$perc <- NA
 data2$perc <- (data2$capita_mis/0.299)*100
 
@@ -32,7 +32,7 @@ data2$perc <- (data2$capita_mis/0.299)*100
 data3 <- data2 %>%
   top_n(36)
 
-#Change name ease of use
+#Change some country names for ease of use
 data3$Entity[5] <- "Trinidad & Tobago"
 data3$Entity[33] <- "Sao Tome"
 
@@ -60,9 +60,5 @@ p <- data3 %>%
     plot.caption=element_text(size=10, face="bold", family="sans"))
 
 
-#Run it!
+#Run it! 'See those pacmans!'.
 p
-
-
-
-

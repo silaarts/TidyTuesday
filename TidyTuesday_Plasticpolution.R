@@ -13,7 +13,7 @@ library(extrafont)
 #Load data
 data <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-21/per-capita-plastic-waste-vs-gdp-per-capita.csv")
 
-#Take only with per capita plastic waste
+#Take only rows with per capita plastic waste: omit the others, leaving only 2010
 data1 <- na.omit(data)
 
 #Change colnames for ease of use: per capita plastic waste, kg per person per day | gpd in $
@@ -27,7 +27,7 @@ data2 <- data1[order(-data1$capita_waste),]
 data2 %>%
   summarise((mean_capita=mean(capita_waste)))
 
-#Select 20 countries with most waste per capita
+#Select 20 countries with most waste per capita > 0.296
 data3 <- data2 %>%
   filter(capita_waste > 0.296)
 

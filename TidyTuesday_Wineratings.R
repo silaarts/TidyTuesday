@@ -13,20 +13,27 @@ library("extrafont")
 #Load data
 data <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-28/winemag-data-130k-v2.csv")
 
-#Keep 3 columns only
+#Keep 3 columns only (x1 is useless and contains duplicate rows)
 data1 <- data %>%
-  select(2,5,6)
+  select(2:14)
 
-#Only select wines with not an exorbitant price: so top is 30e
-data2 <- data1 %>%
+#Only unique rows
+data2 <- unique(data1)
+
+#Select only 3 columns we need
+data2 <- data2 %>%
+  select(1,4,5)
+
+#Only select wines with not an exorbitant price: so top is 30euro!
+data3 <- data2 %>%
   filter(price <30)
 
 #Check levels of country
-data1$country <- as.factor(data1$country)
-levels(data1$country)
+data3$country <- as.factor(data3$country)
+levels(data3$country)
 
 #Select only the top 3 countries
-data3 <- data2 %>%
+data3 <- data3 %>%
   filter(country=="Spain" | country=="France" | country=="Italy")
 
 #Only non-missing data
@@ -40,16 +47,15 @@ data5 <- data4 %>%
 pscatter <- ggplot(data4, aes(price, points, color=country, shape=country)) + 
   geom_point(alpha=.8)+
   scale_color_manual(values=c("violetred", "darkseagreen4","darkgoldenrod"))+
-  xlim(0, 35)+
+  xlim(0, 31)+
   ylim(75, 100)+
-  ylab("Rating")+
-  xlab("Price")+
-  annotate(geom="label", x= 25, y = 75, label = "Total N= 24.262\nFrance= 10.636\nItaly= 8754\nSpain= 4872", family= "Courier", vjust=0.1, size=4, fontface="bold", colour="black", fill="transparent")+
+  ylab("Wine rating")+
+  xlab("Wine price (€)")+
+  annotate(geom="label", x= 25, y = 75, label = "Total N= 22.193\nFrance= 9.696\nItaly= 8.001\nSpain= 4.496", family= "Courier", vjust=0.1, size=4, fontface="bold", colour="black", fill="transparent")+
   theme_classic()+
   theme(
-    plot.caption=element_text(size=10, hjust=0.8,family="Courier New", colour="white"),
-    axis.title.x = element_text(size=10, family="Courier", face="bold", colour="white"),
-    axis.title.y = element_text(size=10, family="Courier", face="bold", colour="white"),
+    axis.title.x = element_text(size=13, family="Courier", face="bold", colour="white"),
+    axis.title.y = element_text(size=13, family="Courier", face="bold", colour="white"),
     axis.text= element_text(size=8, family="Courier", face="bold", colour="white"),
     legend.position="bottom", legend.box = "horizontal",
     legend.background = element_rect(fill="grey30", size=0.5, linetype="solid", colour ="black"),
@@ -61,8 +67,8 @@ pscatter <- ggplot(data4, aes(price, points, color=country, shape=country)) +
 #GGplot: Density Price
 p1_dist <- ggplot(data4, aes(price, fill=country)) + 
   geom_density(alpha=.5)+
-  ylab("Wine price")+
-  xlim(0, 35)+
+  ylab("Wine price (€)")+
+  xlim(0, 31)+
   scale_fill_manual(values=c("violetred", "darkseagreen4","darkgoldenrod"))+
   theme_classic()+
   theme(
@@ -71,14 +77,15 @@ p1_dist <- ggplot(data4, aes(price, fill=country)) +
   axis.line=element_blank(),
   axis.ticks=element_blank(),
   axis.title.x=element_blank(),
-  axis.title.y = element_text(size=10, family="Courier", face="bold", colour="white"),
+  axis.title.y = element_text(size=13, family="Courier", face="bold", colour="white"),
   panel.background = element_rect(fill = "transparent"),
   plot.background = element_rect(fill = "grey30"))
 
-#GGplot: Density Points
+#GGplot: Density Rating
 p2_dist <- ggplot(data4, aes(points, fill=country)) + 
   geom_density(alpha=.5)+
   ylab("Wine rating")+
+  xlim(75,100)+
   scale_fill_manual(values=c("violetred", "darkseagreen4","darkgoldenrod"))+
   theme_classic()+
   theme(
@@ -86,14 +93,14 @@ p2_dist <- ggplot(data4, aes(points, fill=country)) +
     axis.title.y=element_blank(),
     axis.line=element_blank(),
     axis.ticks=element_blank(),
-    axis.title.x= element_text(size=10, family="Courier", face="bold", colour="white"),
+    axis.title.x= element_text(size=13, family="Courier", face="bold", colour="white"),
     panel.background = element_rect(fill = "transparent"),
     plot.background = element_rect(fill = "grey30"))
 
 #Combine the 3 plots
 plot_grid(pscatter, p1_dist, p2_dist, nrow=1)
 
-#Avoid displaying duplicated legend #Flip axis of P2_dist
+#Flip P2_dist
 p2_dist <- p2_dist + coord_flip()
 
 #Add title
@@ -106,13 +113,12 @@ title <- ggplot(data.frame(x = 1:2, y = 1:10))+
         panel.background = element_rect(fill = "transparent"),
         plot.background = element_rect(fill = "grey30"),
         panel.border = element_rect(color = NA),
-        plot.title=element_text(size=15, hjust=0, family="Courier New",face='bold', colour="white"),
-        plot.subtitle=element_text(size=13, hjust=0, family="Courier New", colour="white"),
+        plot.title=element_text(size=18, hjust=0, family="Courier New",face='bold', colour="white"),
+        plot.subtitle=element_text(size=15, hjust=0, family="Courier New", colour="white"),
         plot.caption=element_text(size=12, hjust=0, family="Courier New",face='bold', colour="white"),
         axis.text = element_blank())
 
 #Change margin to reduce the distance between plots: c(top, right, bottom, left)
-#Align G1 density with the scatterplot
 pscatter <- pscatter + theme(plot.margin = unit(c(0, 0, 0.5, 0.5), "cm"))
 p1_dist <- p1_dist + theme(plot.margin = unit(c(0.5, 0, 0, 0.7), "cm"))
 p2_dist <- p2_dist + theme(plot.margin = unit(c(0, 0.5, 0.5, 0), "cm"))

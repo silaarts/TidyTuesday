@@ -22,7 +22,7 @@ library(htmlwidgets)
 #Load data
 data <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-06-04/ramen_ratings.csv")
 
-#Check unique rows
+#Delete first column
 data1 <- data %>%
   select(2:6)
 
@@ -61,7 +61,7 @@ col_numb <- 41
 mycols <- c("#04BEBF","#006169","#FFA28A","#9B0A12")
 mycolors <- colorRampPalette(mycols)(col_numb)
 
-#GGplot: bubbles!
+#GGplot: bubbles/circles!
 p <- ggplot() + 
   geom_polygon_interactive(data = data_gg, aes(x, y, group = id, fill=breaks, tooltip = data6$text[id], data_id = id), colour = "white", alpha = 0.7, size=2) +
   scale_fill_manual(values=mycolors)+

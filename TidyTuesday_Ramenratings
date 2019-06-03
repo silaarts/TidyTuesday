@@ -46,7 +46,7 @@ data5 <- data4 %>%
 data5$brand[c(29,37,38,41)] <- "Koh \n Thai"
 
 #Add a new column with the text you want to display when you press a specific bubble/circle
-data5$text <- paste("Brand: ",data5$brand, "\n", "Variety:", data5$variety, "\n", "Origin county:", data5$country, "\n", "Style of container:", data5$style,"\n","Rating:", data5$stars)
+data5$text <- paste("Brand: ",data5$brand, "\n", "Variety:", data5$variety, "\n", "Origin country:", data5$country, "\n", "Style of container:", data5$style,"\n","Rating:", data5$stars)
 
 #Generate the lay-out (thanks to: https://www.r-graph-gallery.com/308-interactive-circle-packing/)
 circles <- circleProgressiveLayout(data5$stars, sizetype='area')

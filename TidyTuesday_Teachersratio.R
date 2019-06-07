@@ -8,12 +8,7 @@ library(RColorBrewer)
 library(ggplot2)  
 library(readr)
 library(ggmap)
-library(ggplot2)
-library(tidytext)
-library(stringr)
-library(gganimate)
 library(extrafont)
-library(LaCroixColoR)
 
 #Read file
 data <- read.csv2("Desktop/Data1.csv", stringsAsFactors = F)

@@ -10,7 +10,7 @@ library(readr)
 library(ggmap)
 library(extrafont)
 
-#Read file
+#Read file and change colname.
 data <- read.csv2("Desktop/Data1.csv", stringsAsFactors = F)
 colnames(data) [1] <- c("country")
  

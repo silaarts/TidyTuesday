@@ -56,7 +56,7 @@ data_final <- data6 %>%
   filter(class=="L6" | class=="L5" | class=="H5"| class=="H6"| class=="LL6")
 
 #Make some colours
-col <- c("lightpink3","plum","seashell", "darkslategray3","skyblue3")
+col <- c("darkred","#FC3D21", "cornflowerblue" ,"dodgerblue4","#0B3D91")
 
 #Add Images
 #Add image NASA
@@ -79,18 +79,18 @@ theme_sil <- theme_void() +
     text = element_text(size = 10, family="Courier New"),
     plot.background = element_rect(fill="black"),
     panel.background = element_rect(fill= "transparent"),
-    plot.title=element_text(size=21, hjust=0, face='bold', colour="white", lineheight = 1),
-    plot.subtitle=element_text(size=17, hjust=0, colour="white"),
+    plot.title=element_text(size=20, hjust=0, face='bold', colour="white", lineheight = 1),
+    plot.subtitle=element_text(size=16, hjust=0, colour="white"),
     plot.caption=element_text(size=10, hjust=1, colour="white"),
     axis.text = element_text(size = 12, colour="white", face="bold"))
 
 #GGplot
 p <- ggplot(data = data_final, aes(x = class, y = year, fill = class)) +
   annotation_custom(rasterGrob(image3, width = unit(1,"npc"), height = unit(1,"npc")),-Inf, Inf, -Inf, Inf)+
+  annotation_custom(NASA, xmin=0, xmax=1, ymin=1998.5, ymax=1999.5)+
   geom_point(aes(y = year, color = class), position = position_jitter(width = .15), size = 1.5, alpha = 0.8) +
-  geom_boxplot(width = .4, alpha = 0.8, colour = "white", outlier.shape = 1) +
-  geom_flat_violin(position = position_nudge(x=0.25, y=0), alpha = .9) +
-  annotation_custom(NASA, xmin=5.5, xmax=6, ymin=2012, ymax=2014)+
+  geom_boxplot(width = .3, alpha = 0.8, colour = "white", outlier.shape = 1) +
+  geom_flat_violin(position = position_nudge(x=0.25, y=0), alpha = .7) +
   labs(title = "TidyTuesday: Meteorites" ,
        subtitle = "The 5 classes of meteorites that have fallen to Earth the most since 2000" ,
        caption="Source: NASA | Plot by @sil_aarts")+
@@ -103,4 +103,3 @@ p <- ggplot(data = data_final, aes(x = class, y = year, fill = class)) +
 
 #Run it
 p
-

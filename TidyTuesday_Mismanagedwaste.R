@@ -1,6 +1,6 @@
 #TidyTuesday
 #===============================================================================
-#Mismanaged waste around the worls; waste no more...
+#Mismanaged waste around the world; waste no more...
 #@sil_aarts
 #===============================================================================
 

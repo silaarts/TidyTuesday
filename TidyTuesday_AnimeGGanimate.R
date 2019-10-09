@@ -23,7 +23,7 @@ anime3 <- unique(anime2[c("name", "score","rank","start_date", "members","studio
 anime3$year <- format(anime3$start_date, "%Y")
 anime3$year <- as.numeric(anime3$year)
 
-#Chabnge members variabele
+#Change members variabele
 anime3$members <- anime3$members/1000
 
 #GGplot: scatter

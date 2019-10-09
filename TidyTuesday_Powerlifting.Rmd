@@ -1,0 +1,164 @@
+---
+title: "TidyTuesday Powerlifting"
+author: "Sil Aarts"
+date: "10/8/2019"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+
+```{r fig.height = 10, fig.width = 5}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(wesanderson)
+library(showtext)
+library(showtextdb)
+library(patchwork)
+
+#Read file
+lifts <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-08/ipf_lifts.csv")
+
+#Select females
+data <- lifts %>%
+  filter(sex== "F")
+
+#Select 2019
+data1 <- data %>%
+  filter(date > "2019-01-01")
+#Select age-class
+data2 <- data1 %>%
+  filter(meet_name== "University Powerlifting Cup" | meet_name == "World Classic Powerlifting Championships")
+
+#Split variable
+data2 <- separate(data2, col = name, into = c("name","backname"), sep = " ")
+data2$class <- 1
+
+#Change some names
+data2$meet_name[data2$meet_name=="University Powerlifting Cup"] <- "University\nPowerlifting\nCup"
+data2$meet_name[data2$meet_name=="World Classic Powerlifting Championships"] <- "World Classic\nPowerlifting\nChampionships"
+data2$backname[data2$backname== "Klińska"] <- "Klinska"
+data2$backname[data2$backname== "Zmeškalová"] <- "Zmeskalova"
+data2$backname[data2$backname== "Francis-Freeman"] <- "Francis"
+data2$backname[data2$backname== "M."] <- "M"
+data2$backname[data2$backname== "Ławniczak"] <- "Tawniczak"
+
+
+#Select top 10 from every tournament
+data3 <- data2 %>%
+  group_by(meet_name) %>%
+  top_n(10, best3deadlift_kg)
+
+data4 <- data2 %>%
+  group_by(meet_name) %>%
+  top_n(10, best3squat_kg)
+
+data5 <- data2 %>%
+  group_by(meet_name) %>%
+  top_n(10, best3bench_kg)
+  
+#Make sure every bar has a distinct colour
+color <- wes_palette("Rushmore1", 14, type = "continuous")
+
+#GGplot: heat map
+p1 <- ggplot(data3, aes(x = name, y = class)) +
+  geom_tile(aes(fill = best3deadlift_kg))+
+  scale_fill_gradientn(colours = color)+
+  scale_fill_gradientn(colours = color, breaks=seq(150,250, by=25))+
+  geom_text(aes(x=name, y= class, label= substr(backname, 1, 11)), size=1, vjust=0.8, color="black")+
+  coord_polar(theta="x")+
+  scale_y_discrete(limits = c(-0.5, 2))+
+  facet_wrap (~ meet_name)+
+  geom_text(aes(x= 0.5, y = -0.5, label = paste0(meet_name)), size=2.5, color="grey", family="mono", face="bold")+ 
+  labs(fill="weight in kg")+
+  labs(subtitle = "DEADLIFTS", title="FEMALE POWERLIFTING 2019*")+
+  theme_minimal() +
+  theme(
+    plot.margin = unit(c(1,1,0,0), "cm"),
+    text = element_text(family= "mono", color = "black"),
+    legend.key.height = unit(0.2, "cm"),
+    legend.position = "bottom",
+    plot.title=element_text(size=21, hjust=0.5, face='bold', colour="black", lineheight = 1),
+    plot.subtitle=element_text(size=18, hjust=0.5, colour="grey30", face="bold"),
+    panel.border = element_blank(),
+    axis.text.x= element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    strip.text = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+
+#GGplot: heat map
+p2 <- ggplot(data4, aes(x = name, y = class)) +
+  geom_tile(aes(fill = best3squat_kg))+
+  scale_fill_gradientn(colours = color)+
+    scale_fill_gradientn(colours = color, breaks=seq(150,250, by=25))+
+  geom_text(aes(x=name, y= class, label= substr(backname, 1, 11)), size=1, vjust=0.5, color="black")+
+  coord_polar(theta="x")+
+  scale_y_discrete(limits = c(-0.5, 2))+
+  facet_wrap (~ (factor(meet_name)))+
+  geom_text(aes(x= 0.5, y = -0.5, label = paste0(meet_name)), size=2.5, color="grey", family="mono", face="bold")+ 
+  labs(fill="weight in kg")+
+  labs(subtitle = "SQUATS")+
+  theme_minimal() +
+  theme(
+    plot.margin = unit(c(0,0,0,0), "cm"),
+    text = element_text(family= "mono", color = "black"),
+   legend.position = "bottom",
+    legend.key.height = unit(0.2, "cm"),
+    plot.subtitle=element_text(size=18, hjust=0.5, colour="grey30", face="bold"),
+    plot.caption=element_text(size=8, hjust=1, colour="black"),
+    panel.border = element_blank(),
+    axis.text.x= element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    strip.text = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+#GGplot: heat map
+p3 <- ggplot(data5, aes(x = name, y = class)) +
+  geom_tile(aes(fill = best3bench_kg))+
+  scale_fill_gradientn(colours = color, breaks=seq(80,160, by=20))+
+  geom_text(aes(x=name, y= class, label= substr(backname, 1, 11)), size=1, vjust=0.8, color="black", face="bold")+
+  coord_polar(theta="x")+
+  scale_y_discrete(limits = c(-0.5, 2))+
+  facet_wrap (~ (factor(meet_name)))+
+  geom_text(aes(x= 0.5, y = -0.5, label = paste0(meet_name)), size=2.5, color="grey", family="mono")+ 
+  labs(fill="weight in kg", caption= "*Top 10 females per discipline per tournament\nSource: OpenPowerlifting.org | Plot by @sil_aarts")+
+  labs(subtitle = "BENCH")+
+  theme_minimal() +
+  theme(
+    plot.margin = unit(c(0,0,0,0), "cm"),
+    text = element_text(family= "mono", color = "black"),
+    legend.text = element_text(color="black", family="mono"),
+    legend.position = "bottom",
+    legend.key.height = unit(0.2, "cm"),
+    plot.subtitle=element_text(size=18, hjust=0.5, colour="grey30", face="bold"),
+    plot.caption=element_text(size=8, hjust=0.5, colour="grey30"),
+    panel.border = element_blank(),
+    axis.text.x= element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.y = element_blank(),
+    strip.text = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+#Run quartz for showtext
+quartz()
+
+#Arrange plot
+(p1 + p2 + p3 + plot_layout(nrow=3))*
+  theme(plot.background = element_rect(fill = "white"), 
+    panel.background = element_rect(fill = "white"))
+
+```

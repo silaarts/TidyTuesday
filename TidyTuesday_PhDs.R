@@ -17,7 +17,8 @@ Year <- c(1997, 2002, 2007, 2012, 2017)
 data4 <- cbind(Year, data3)
 
 #Select Psychology and Social Sciences
-data5 <- data4 %>% select("Year", "Psychology.and.social.sciences.", "Hispanic.or.Latino.4","American.Indian.or.Alaska.Native.4"
+data5 <- data4 %>% 
+  select("Year", "Psychology.and.social.sciences.", "Hispanic.or.Latino.4","American.Indian.or.Alaska.Native.4"
   ,"Asiana.4", "Black.or.African.American.4", "White.4", "More.than.one.race.4","Other.race.or.race.not.reportedb.4")
 
 #Change colnames for ease of use
@@ -51,4 +52,3 @@ ggtitle(label = "Getting your PhD in the U.S.", subtitle="PhD awarded in Psychol
 
 #Run GGplot
 p
-

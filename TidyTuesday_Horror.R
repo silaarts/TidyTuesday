@@ -46,7 +46,7 @@ movie <- grid::rasterGrob(image, interpolate = T)
 blood <- grid::rasterGrob(image2, interpolate = T)
 
 #Pixels!
-#Low Res is lot of dotts. High is 'dotless'.
+#Low resolution is lot of dots. High is 'dotless'.
 resolution <- 1.5
 lat <- tibble(lat = seq(-90, 90, by = resolution))
 long <- tibble(long = seq(-180, 180, by = resolution))
@@ -61,7 +61,7 @@ pixels <- merge(lat, long, all = TRUE) %>%
 font_add_google("Barrio", "C")
 showtext_auto()
 
-#Theme 2
+#Theme
 theme <-  theme_map() +
   theme(
     text = element_text(family="C"),
@@ -83,7 +83,7 @@ pixelsmap <- ggplot() +
 quartz()
 
 #GGplot: ggmap
-p <- pixels+ 
+p <- pixelsmap + 
   geom_point(data =data6, aes(x = lon, y = lat), color = "red", size = 2) +
   geom_point(data =data6, aes(x = lon, y = lat), color = "red", size = 4, alpha=0.4)+
   #Peru

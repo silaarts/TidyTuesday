@@ -35,7 +35,7 @@ data4 <- data3 %>%
 #Merge long & lat
 data5 <- data4 %>%
   drop_na(city)
-register_google(key = "AIzaSyBPfgXrAPgnR_tFYd4PfXINnpDp4nosAvE") 
+register_google(key = "Your key here") 
 geo <- geocode(data5$city) 
 data6 <- merge(data5, geo, by.x = 0, by.y = 0)
 

@@ -1,8 +1,6 @@
 #TidyTuyesday
 #Female earnings
 library(tidyverse)
-library(ggplot2)
-library(dplyr)
 library(gganimate)
 library(gapminder)
 library(RColorBrewer)

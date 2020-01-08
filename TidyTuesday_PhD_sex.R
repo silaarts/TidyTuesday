@@ -8,7 +8,7 @@ library(ggplot2)
 library(dplyr)
 library(datapasta)
 
-#Datapaste, so less cleaning is necessary
+#Datapaste, sto just try it! ;-)
 data <- data.frame(
           V1 = c(58, 59),
           V2 = c(26.305, 22.397),
@@ -66,6 +66,8 @@ p <- ggplot(data4, aes(x=Field, y=Count, fill=sex))+
         axis.text.x= element_blank(),
         axis.title.x = element_blank(),
         axis.title.y = element_blank())
+
+#Run it!
 p
 
 #Save plot

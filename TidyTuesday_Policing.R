@@ -3,12 +3,9 @@
 
 #Load libraries
 library(tidyverse)
-library(ggplot2)
-library(dplyr)
 library(gganimate)
 library(extrafont)
 library(RColorBrewer)
-library(readr)
 
 #Read file
 combined_data <- readr::read_csv("https://raw.githubusercontent.com/5harad/openpolicing/master/results/data_for_figures/combined_data.csv")

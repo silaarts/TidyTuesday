@@ -37,8 +37,8 @@ food3 <- food %>%
 my_colors <- c("#4D03C6", "#F4A2FF", "#3ABEAA", "darkgoldenrod", "#FB704A") 
 my_colors2 <- c("#624D7C", "#D9E8EF", "#D9245E", "#FFB648", "#00E2C5", "#FCEAFF","#21819F","#00569D","#9E87BA","#A60099","#F6940C")
 #Make many colours in palettes
-nb.cols <- 11
-colors <- colorRampPalette(brewer.pal(9,"BuPu"))(nb.cols)
+#nb.cols <- 11
+#colors <- colorRampPalette(brewer.pal(9,"BuPu"))(nb.cols)
 
 ```
 

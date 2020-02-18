@@ -1,0 +1,287 @@
+---
+title: "TidyTuesday_17feb"
+author: "Sil Aarts"
+date: "2/9/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word: default
+  word_document: default
+---
+
+```{r echo=F, warnings=F, message=F }
+#Load Libraries
+library(tidyverse)
+library(RColorBrewer)
+library(cowplot)
+library(ggtext)
+library(extrafont)
+library(ggridges)
+
+#Read file
+food <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-18/food_consumption.csv')
+
+#Check it! Are we in there? ;-)
+unique(food$country)
+
+#Filter
+food2 <- food %>%
+  filter(country =="Netherlands" | country=="Belgium" | country== "France" | country== "Germany" | country=="Luxembourg")
+
+#NL
+food3 <- food %>%
+  filter(country =="Netherlands")
+           
+#Make some colors
+my_colors <- c("#4D03C6", "#F4A2FF", "#3ABEAA", "darkgoldenrod", "#FB704A") 
+my_colors2 <- c("#624D7C", "#D9E8EF", "#D9245E", "#FFB648", "#00E2C5", "#FCEAFF","#21819F","#00569D","#9E87BA","#A60099","#F6940C")
+#Make many colours in palettes
+nb.cols <- 11
+colors <- colorRampPalette(brewer.pal(9,"BuPu"))(nb.cols)
+
+```
+
+```{r echo=F, warnings=F, message=F }
+#Geom_flat_violin by David Robinson
+"%||%" <- function(a, b) {
+  if (!is.null(a)) a else b
+}
+
+geom_flat_violin <- function(mapping = NULL, data = NULL, stat = "ydensity",
+                             position = "dodge", trim = TRUE, scale = "area",
+                             show.legend = NA, inherit.aes = TRUE, ...) {
+  layer(
+    data = data,
+    mapping = mapping,
+    stat = stat,
+    geom = GeomFlatViolin,
+    position = position,
+    show.legend = show.legend,
+    inherit.aes = inherit.aes,
+    params = list(
+      trim = trim,
+      scale = scale,
+      ...
+    )
+  )
+}
+
+#' @rdname ggplot2-ggproto
+#' @format NULL
+#' @usage NULL
+#' @export
+GeomFlatViolin <-
+  ggproto("GeomFlatViolin", Geom,
+          setup_data = function(data, params) {
+            data$width <- data$width %||%
+              params$width %||% (resolution(data$x, FALSE) * 0.9)
+            
+            # ymin, ymax, xmin, and xmax define the bounding rectangle for each group
+            data %>%
+              group_by(group) %>%
+              mutate(ymin = min(y),
+                     ymax = max(y),
+                     xmin = x,
+                     xmax = x + width / 2)
+          },
+          
+          draw_group = function(data, panel_scales, coord) {
+            # Find the points for the line to go all the way around
+            data <- transform(data, xminv = x,
+                              xmaxv = x + violinwidth * (xmax - x))
+            
+            # Make sure it's sorted properly to draw the outline
+            newdata <- rbind(plyr::arrange(transform(data, x = xminv), y),
+                             plyr::arrange(transform(data, x = xmaxv), -y))
+            
+            # Close the polygon: set first and last point the same
+            # Needed for coord_polar and such
+            newdata <- rbind(newdata, newdata[1,])
+            
+            ggplot2:::ggname("geom_flat_violin", GeomPolygon$draw_panel(newdata, panel_scales, coord))
+          },
+          
+          draw_key = draw_key_polygon,
+          
+          default_aes = aes(weight = 1, colour = "grey20", fill = "white", size = 0.5,
+                            alpha = NA, linetype = "solid"),
+          
+          required_aes = c("x", "y")
+  )
+```
+
+
+```{r echo=F, warnings=F, message=F }
+#Title
+title <- ggplot() +
+  geom_hline(yintercept = 3.5, colour="darkgoldenrod", size=2)+
+  #First one
+  geom_rect(aes(xmin = -15, ymin = 1, xmax = -14, ymax = 3), size=3, fill= "#4D03C6", color="darkgoldenrod")+
+  geom_text(aes(x = -14.5, y = 2), label="341.47\nMilk\nconsumption", size=9, color="white", face="bold", fill= "darkslategray4",family="Georgia")+
+  #Second one
+  geom_rect(aes(xmin = -13, ymin = 1, xmax = -12, ymax = 3), size=3, fill="#4D03C6", color="darkgoldenrod" )+
+  geom_text(aes(x = -12.5, y = 2), label="0.94\nLamb & goat\nconsumption", color="white", face="bold", size=9, fill= "darkslategray4",family="Georgia")+
+  #Third one
+  geom_rect(aes(xmin = -11, ymin = 1, xmax = -10, ymax = 3), size=3, fill= "#4D03C6", color="darkgoldenrod")+
+  geom_text(aes(x = -10.5, y = 2), label="545.26\nCo2\nemmission\ndue to beef", color="white", face="bold",  size=9, fill= "darkslategray4",family="Georgia")+
+  #Fourth one
+  geom_rect(aes(xmin = -9, ymin = 1, xmax = -8, ymax = 3), size=3, fill= "#4D03C6", color="darkgoldenrod")+
+  geom_text(aes(x = -8.5, y = 2), label="486.39\nCo2\nemmission\ndue to milk", color="white", face="bold",  size=9, fill= "darkslategray4",family="Georgia")+
+  labs(x = NULL, y = NULL,
+      title = "<b style='color:darkgoldenrod'>WE ARE WHAT WE EAT!</b>",
+    subtitle = "Food consumption & Co2 emmission (kg/person/year) in the Netherlands")+
+theme_classic(10)+
+  theme(
+  text = element_text(family="Georgia"),
+  plot.title = element_markdown(color="white", size=60, hjust=0.5),
+  plot.subtitle = element_markdown(color="white", size=35, hjust=0.5),
+  axis.text.y = element_blank(),
+  axis.ticks.y =  element_blank(),
+  plot.background = element_rect(fill = "black", color = "black"),
+  panel.background = element_rect(fill = "black", color = "black"),
+  panel.border = element_rect(fill = NA, color = NA),
+  strip.background = element_rect(fill = NA, color = NA),
+  plot.margin = margin(20, 20, 20, 20))
+
+```
+
+```{r echo=F, warnings=F, message=F }
+#Text
+text <- ggplot(data.frame(x = 1:2, y = 1:10)) +
+  labs(x = NULL, y = NULL,
+       subtitle = "<br><br>When comparing the Netherlands with several surrounding countries (i.e. Belgium, France, Luxemburg<br> & Germany), the <b style='color:darkgoldenrod'>Co2 emission (Kg CO2/person/year)</b> of the Netherlands is rather similar to that of <br>other countries. However, it's Co2 commission due to Beef is rather high.<br>Luxembourg and France have an even higher Co2 emmission due to beef consumption.<br>") +
+ theme_minimal(10)+
+  theme(
+  text = element_text(family="Georgia"),
+  plot.subtitle = element_markdown(color="white", size=30, hjust=0.5),
+  plot.background = element_rect(fill = "black", color = "black"),
+  panel.background = element_rect(fill = "black", color = "black"),
+  panel.border = element_rect(fill = NA, color = NA),
+  strip.background = element_rect(fill = NA, color = NA),
+  legend.background = element_rect(fill = NA, color = NA),
+  legend.key = element_rect(fill = NA, color = NA))
+
+```
+
+```{r echo=F, warnings=F, message=F }
+#Text
+text2 <- ggplot(data.frame(x = 1:2, y = 1:10)) +
+  labs(x = NULL, y = NULL,
+       subtitle = "<br><br>When exploring <b style='color:darkgoldenrod'>food consumption (kg/person/year)</b> we see that the Dutch love their milk <br> (& corresponding cheese products; a cheese sandwich and a glass of milk is a typical Dutch breakfast or lunch).<br>Soy beans, lamb & goat are not that popular in the Netherlands.",
+       caption = "Source: nu3 | Plot by @sil_aarts") +
+ theme_minimal(10)+
+  theme(
+  text = element_text(family="Georgia"),
+  plot.subtitle = element_markdown(color="white", size=30, hjust=0.5),
+  plot.caption = element_text(color="white", size=18, hjust=0.9, family="Georgia"),
+  plot.background = element_rect(fill = "black", color = "black"),
+  panel.background = element_rect(fill = "black", color = "black"),
+  panel.border = element_rect(fill = NA, color = NA),
+  strip.background = element_rect(fill = NA, color = NA),
+  legend.background = element_rect(fill = NA, color = NA),
+  legend.key = element_rect(fill = NA, color = NA))
+
+```
+
+
+```{r echo=F, warnings=F, message=F }
+theme_plot <-  theme_bw()+
+    theme(
+    text = element_text(family="Georgia"),
+    axis.title.x = element_text(size=11, colour="white", face="bold"),
+    axis.text.x = element_text(size=9, colour="white"),
+    axis.text.y= element_text(size=9, colour="white"),
+    axis.title.y= element_text(size=11, colour="white", face="bold"),
+    panel.background = element_rect(fill = "black", color="black"),
+    plot.background = element_rect(fill = "black", color="black"),
+    strip.background = element_rect(fill = NA, color = NA))
+```
+
+
+```{r echo=F, warnings=F, message=F }
+p1 <- ggplot(food2, aes(x=co2_emmission, y=country, fill=country))+
+  geom_density_ridges2(alpha = .8)+
+  scale_fill_manual(values = my_colors) +
+  labs(x="Co2 emmission", y= "")+
+  theme_classic()+
+  theme(
+    text = element_text(family="Georgia"),
+    legend.position="none",
+    legend.background = element_rect(color="black", fill="black"),
+    legend.text= element_text(color="white", size=20),
+    axis.title.x = element_text(color="white", size=20, face="bold"),
+    axis.text.y = element_text(color="white", size=20),
+    axis.text.x= element_text(color="white", size=25),
+    axis.ticks.y = element_blank(),
+    #axis.ticks.x = element_line(color="white", size=15),
+    panel.grid.major.y  = element_line(color="white"),
+    panel.background = element_rect(fill = "black", color="black"),
+    plot.background = element_rect(fill = "black", color="black"),
+    strip.background = element_rect(fill = NA, color = NA))
+
+```
+
+```{r echo=F, warnings=F, message=F }
+#Something with polars
+p2 <- ggplot(data=food3, aes(food_category, consumption)) + 
+  geom_col(aes(fill=food_category), width =1, position = "dodge")+
+  scale_fill_manual(values = my_colors2)+
+  #facet_wrap(~food_category, nrow=3, ncol=5)+
+  labs(caption= "",
+       x="", 
+       y="",
+       title="Consumption (kg/person/year)")+
+  coord_flip()+
+  theme_plot+
+   theme(
+    text = element_text(family="Georgia"),
+    legend.position="none",
+    plot.title = element_markdown(color="darkgoldenrod", size=30, hjust=0.5),
+    plot.caption = element_text(color="white", size=10),
+    axis.title.x = element_text(color="white", size=15),
+    axis.title.y = element_text(color="white", size=25),
+    axis.text.x = element_text(size=20, colour="white"),
+    axis.text.y= element_text(size=15, colour="white"),
+    panel.grid.major.x = element_line(color="grey27"),
+    panel.grid.major.y = element_line(color="grey27"),
+    panel.background = element_rect(fill = "black", color="black"),
+    plot.background = element_rect(fill = "black", color="black"),
+    strip.background = element_rect(fill = NA, color = NA))
+
+p3 <- ggplot(data=food3, aes(food_category, co2_emmission)) + 
+  geom_col(aes(fill=food_category), width =1, position = "dodge")+
+  scale_fill_manual(values = my_colors2)+
+  #facet_wrap(~food_category, nrow=3, ncol=5)+
+  labs(caption= "",
+       x="", 
+       y="",
+       title="Co2 emmission (kg/person/year)")+
+  coord_polar()+
+  theme_plot+
+   theme(
+    text = element_text(family="Georgia"),
+    legend.position="none",
+    plot.title = element_markdown(color="darkgoldenrod", size=30, hjust=0.5),
+    plot.caption = element_text(color="white", size=10),
+    axis.title.x = element_text(color="white", size=15),
+    axis.title.y = element_text(color="white", size=25),
+    axis.text.x = element_text(size=20, colour="white"),
+    axis.text.y= element_text(size=15, colour="white"),
+    panel.grid.major.x = element_line(color="grey27"),
+    panel.grid.major.y = element_line(color="grey27"),
+    panel.background = element_rect(fill = "black", color="black"),
+    plot.background = element_rect(fill = "black", color="black"),
+    strip.background = element_rect(fill = NA, color = NA))
+
+```
+
+
+```{r fig.width = 21, fig.height = 30}
+#Combine plots
+pf2 <- plot_grid(p2,p3, rel_heights = c(11,11), rel_widths = c(14,14))
+pf2
+
+pf3 <-  plot_grid(title, p1, text, pf2, text2, nrow=5, rel_heights = c(10,15,7.5,22,7.5), rel_widths = c(10,10,10,10,10))
+pf3
+```

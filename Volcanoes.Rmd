@@ -1,0 +1,228 @@
+---
+title: "TidyTuesday_volcanoes"
+author: "Sil Aarts"
+date: "5/12/2020"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+
+```{r}
+#Load libraries
+library(tidyverse)
+library(RColorBrewer)
+library(cowplot)
+library(ggtext)
+library(ggridges)
+library(showtext)
+library(showtextdb)
+library(extrafont)
+```
+
+
+```{r echo=F, warnings=F, message=F }
+#Load file
+volcano <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-05-12/volcano.csv')
+
+#See colnamws for ease of use 
+names(volcano)[names(volcano) == "population_within_5_km"]  <- "pop5" 
+names(volcano)[names(volcano) == "population_within_10_km"]  <- "pop10" 
+names(volcano)[names(volcano) == "population_within_30_km"]  <- "pop30" 
+names(volcano)[names(volcano) == "population_within_100_km"]  <- "pop100"
+
+#Subgroups
+data <- volcano %>%
+  mutate(pop5_group = case_when(pop5 <= 100 ~ '< =100',
+                                pop5 >= 101  & pop5 <= 1000 ~ '101 - 1000',
+                                pop5 >= 1001  & pop5 <= 10000 ~ '1001 - 10.000',
+                                pop5 >= 10001  & pop5 <= 100000 ~ '10.001 - 100.000',
+                                pop5 >= 100001  & pop5 <= 1000000 ~ '100.001 - 1.000.000',
+                                pop5 >= 1000001  ~ '> 1.000.000')) %>%
+  mutate(pop10_group = case_when(pop10 <= 100 ~ '< =100',
+                                pop10 >= 101  & pop10 <= 1000 ~ '101 - 1000',
+                                pop10 >= 1001  & pop10 <= 10000 ~ '1001 - 10.000',
+                                pop10 >= 10001  & pop10 <= 100000 ~ '10.001 - 100.000',
+                                pop10 >= 100001  & pop10 <= 1000000 ~ '100.001 - 1.000.000',
+                                pop10 >= 1000001  ~ '> 1.000.000')) %>%
+         mutate(pop30_group = case_when(pop30 <= 100 ~ '< =100',
+                                       pop30 >= 101  & pop30 <= 1000 ~ '101 - 1000',
+                                       pop30 >= 1001  & pop30 <= 10000 ~ '1001 - 10.000',
+                                       pop30 >= 10001  & pop30 <= 100000 ~ '10.001 - 100.000',
+                                       pop30 >= 100001  & pop30 <= 1000000 ~ '100.001 - 1.000.000',
+                                       pop30 >= 1000001  ~ '> 1.000.000')) %>%
+                mutate(pop100_group = case_when(pop100 <= 100 ~ '< =100',
+                                                pop100 >= 101  & pop100 <= 1000 ~ '101 - 1000',
+                                                pop100 >= 1001  & pop100 <= 10000 ~ '1001 - 10.000',
+                                                pop100 >= 10001  & pop100 <= 100000 ~ '10.001 - 100.000',
+                                                pop100 >= 100001  & pop100 <= 1000000 ~ '100.001 - 1.000.000',
+                                                pop100 >= 1000001  ~ '> 1.000.000'))
+                       
+#Count per group
+data1 <- data %>%
+  group_by(pop5_group) %>%
+  dplyr::mutate(pop5_grouptotal = n())%>%
+  group_by(pop10_group) %>%
+  dplyr::mutate(pop10_grouptotal = n())%>%
+  group_by(pop30_group) %>%
+  dplyr::mutate(pop30_grouptotal = n())%>%
+  group_by(pop100_group) %>%
+  dplyr::mutate(pop100_grouptotal = n())
+
+
+#Select
+data2 <- data1 %>%
+  select(27:34)
+data3 <- data2 %>%
+  distinct()
+
+#Rename columns
+names(data2)[1:4] <- c("km5","km10","km30", "km100") 
+         
+#Calculate mountains (volcano's) based on pop5,pop10,pop30 & pop100
+data4 <- data3 %>%
+  rowwise() %>% 
+  mutate(
+    #5km
+    x1 = list(c(-pop5_grouptotal, 0, pop5_grouptotal)),
+    y1 = list(c(0, pop5_grouptotal/4, 0)),
+    #10km
+    x2 = list(c(-pop10_grouptotal, 0, pop10_grouptotal)),
+    y2 = list(c(0, pop10_grouptotal/4, 0)),
+    #30km
+    x3 = list(c(-pop30_grouptotal, 0, pop30_grouptotal)),
+    y3 = list(c(0, pop30_grouptotal/4, 0)),
+    #100km
+    x4 = list(c(-pop100_grouptotal, 0, pop100_grouptotal)),
+    y4 = list(c(0, pop100_grouptotal/4, 0)),
+
+  ) %>% 
+  unnest(c(x1, y1, x2, y2, x3, y3, x4, y4))
+
+#Title
+title <- ggplot() +
+  labs(x = NULL, y = NULL,
+       title = "HUMAN POPULATION & VOLCANOES")+
+theme_void() +
+  theme(
+    strip.text = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.margin = unit(c(0,0,0,0), "cm"),
+    plot.background = element_rect(fill = "grey28", colour = "grey28"),
+    strip.background = element_rect(fill = "grey28"),
+    plot.title = element_text(colour = "white", size = 55, hjust = 0.5, family = "Georgia", face="bold",margin = margin(30, 0, 0, 0)),
+  )
+
+#Explanation
+sub <- ggplot() +
+  labs(x = NULL, y = NULL,
+       subtitle = "\nHere you see a lot of valcanoes: 24 to be exact.\nThe hight of a volcano is a measure of the number of volcanoes.\nHence, a bigger volcano (i.e. triangle) is indicative for a 'higher' number of volcanoes.\nThe volcanoes are divided by population and distance.\nThe population is displayed within 5km, 10km, 30km and 100km of these volcanoes.
+       
+       Please note that the # of volcanoes goes from low to high within a distance,\nwhich means that the six population levels have a different build-up per distance.",
+       caption = "Source: Smithsonian & https://doi.org/10.1038/nature14565 | Plot by @sil_aarts")+
+ theme_void() +
+  theme(
+    strip.text = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "grey28", colour = "grey28"),
+    strip.background = element_rect(fill = "grey28"),
+    plot.margin = unit(c(0,0,0,0), "cm"),
+    plot.subtitle = element_text(colour = "white", size = 40, hjust= 0.5, family = "Georgia", margin = margin(10, 0, 0, 0)),
+    plot.caption = element_text(colour = "orange", size = 25, hjust = 0.5, family = "Georgia", margin = margin(20, 0, 20, 0))
+  )
+```
+
+```{r echo=F, warnings=F, message=F }
+#Load libraries
+library(tidyverse)
+library(RColorBrewer)
+library(cowplot)
+library(ggtext)
+library(ggridges)
+library(showtext)
+library(showtextdb)
+
+#Theme for plots
+theme <- theme_void() +
+  theme(
+    strip.text = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "grey28", colour = "grey28"),
+    strip.background = element_rect(fill = "grey28"),
+    panel.background = element_rect(fill = "grey28", color = "grey28"),
+    plot.title = element_text(colour = "white", size = 40, hjust = 0.5, family = "Georgia"),
+    plot.margin = unit(c(2,2,0,2), "cm")
+    )
+
+p1 <- ggplot(data4) +
+  # draw the spotlights
+  geom_polygon(aes(x1, y1), fill = "orangered1", alpha = 0.7) +
+  #Add text
+  geom_text(aes(0,-30, label = paste0(round(pop5_grouptotal), " volcanoes")), hjust = 0.5,  colour = "orange", size = 10, family="Georgia") +
+  geom_text(aes(0,-10, label = paste0(pop5_group, "\n# of people")), hjust = 0.5, colour = "white", size = 10, family="Georgia") +
+  labs(x = NULL, y = NULL, title = "\nPopulation within 5 km")+
+  facet_wrap(~ pop5_grouptotal, nrow = 1, ncol=6) +
+  theme
+
+
+#10km
+p2 <- ggplot(data4) +
+  # draw the spotlights
+  geom_polygon(aes(x2, y2), fill = "orangered1", alpha = 0.7) +
+  #Add text
+  geom_text(aes(0,-30, label = paste0(round(pop10_grouptotal), " volcanoes")), hjust = 0.5, colour = "orange", size = 10, family="Georgia") +
+  geom_text(aes(0,-10, label = paste0(pop10_group, "\n# of people")), hjust = 0.5, colour = "white", size = 10, family="Georgia") +
+  facet_wrap(~ pop10_grouptotal, nrow = 1, ncol=6) +
+  labs(x = NULL, y = NULL, title = "\nPopulation within 10 km")+
+  theme
+
+#30km
+p3 <- ggplot(data4) +
+  # draw the spotlights
+  geom_polygon(aes(x3, y3), fill = "orangered1", alpha = 0.7) +
+  #Add text
+  geom_text(aes(0,-30, label = paste0(round(pop30_grouptotal), " volcanoes")), hjust = 0.5, colour = "orange", size = 10, family="Georgia") +
+  geom_text(aes(0,-10, label = paste0(pop30_group, "\n# of people")), hjust = 0.5, colour = "white", size = 10, family="Georgia") +
+  facet_wrap(~ pop30_grouptotal, nrow = 1, ncol=6) +
+  labs(x = NULL, y = NULL, title = "\nPopulation within 30 km")+
+  theme
+
+#100km
+p4 <- ggplot(data4) +
+  # draw the spotlights
+  geom_polygon(aes(x4, y4), fill = "orangered1", alpha = 0.7) +
+  #Add text
+  geom_text(aes(0,-30, label = paste0(round(pop100_grouptotal), " volcanoes")), hjust = 0.5, colour = "orange", size = 10, family="Georgia") +
+  geom_text(aes(0,-10, label = paste0(pop100_group, "\n# of people")), hjust = 0.5, colour = "white", size = 10, family="Georgia") +
+  facet_wrap(~ pop100_grouptotal, nrow = 1, ncol=6) +
+  labs(x = NULL, y = NULL, title = "\nPopulation within 100 km")+
+  theme
+
+```
+
+
+```{r fig.width = 26, fig.height = 39}
+#Combine plots
+plots <- plot_grid(title, p1, p2, p3, p4, sub, nrow=6, ncol=1, rel_heights = c(1,8,7,7,8,6), rel_widths = c(7,7,7,7,7,7))
+
+#Run it!
+plots
+```
+
+

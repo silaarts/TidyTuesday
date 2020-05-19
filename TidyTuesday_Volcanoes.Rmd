@@ -171,7 +171,7 @@ theme <- theme_void() +
     )
 
 p1 <- ggplot(data4) +
-  # draw the spotlights
+  #polygons
   geom_polygon(aes(x1, y1), fill = "orangered1", alpha = 0.7) +
   #Add text
   geom_text(aes(0,-30, label = paste0(round(pop5_grouptotal), " volcanoes")), hjust = 0.5,  colour = "orange", size = 10, family="Georgia") +
@@ -183,7 +183,7 @@ p1 <- ggplot(data4) +
 
 #10km
 p2 <- ggplot(data4) +
-  # draw the spotlights
+  #polygons
   geom_polygon(aes(x2, y2), fill = "orangered1", alpha = 0.7) +
   #Add text
   geom_text(aes(0,-30, label = paste0(round(pop10_grouptotal), " volcanoes")), hjust = 0.5, colour = "orange", size = 10, family="Georgia") +
@@ -194,7 +194,7 @@ p2 <- ggplot(data4) +
 
 #30km
 p3 <- ggplot(data4) +
-  # draw the spotlights
+  #polygons
   geom_polygon(aes(x3, y3), fill = "orangered1", alpha = 0.7) +
   #Add text
   geom_text(aes(0,-30, label = paste0(round(pop30_grouptotal), " volcanoes")), hjust = 0.5, colour = "orange", size = 10, family="Georgia") +
@@ -205,7 +205,7 @@ p3 <- ggplot(data4) +
 
 #100km
 p4 <- ggplot(data4) +
-  # draw the spotlights
+  #polygons
   geom_polygon(aes(x4, y4), fill = "orangered1", alpha = 0.7) +
   #Add text
   geom_text(aes(0,-30, label = paste0(round(pop100_grouptotal), " volcanoes")), hjust = 0.5, colour = "orange", size = 10, family="Georgia") +

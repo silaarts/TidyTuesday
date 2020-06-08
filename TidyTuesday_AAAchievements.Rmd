@@ -29,12 +29,10 @@ firsts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tid
 ```
 
 ```{r echo=F, warnings=F, message=F}
-
-#Count
+#Count (not used in this plot)
 data <- firsts %>%
   group_by(category, year) %>%
   dplyr::mutate(category_total = n()) 
-
 ```
 
 ```{r echo=F, warnings=F, message=F}
@@ -59,7 +57,7 @@ theme_plot <-  theme_void()+
 ```
 
 ```{r echo=F, warnings=F, message=F}
-#Make colours
+#Make some colours
 colors <- wes_palette("Darjeeling2", 8, type="continuous")
 ```
 

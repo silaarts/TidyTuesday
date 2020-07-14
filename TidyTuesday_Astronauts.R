@@ -75,7 +75,7 @@ p <- ggplot()+
  #Add text
   geom_text(aes(x=1.5, y=-13, label= "Toyohiro Akiyama:\nthe only journalist"), color="white", size=2, inherit.aes = FALSE, family="G")+ 
   geom_text(aes(x=10.15, y=8, label= "7\nThe highest\nnumber of\nmissions by\nFranklin R.Chang-Diaz\n&\n Jerry Ross"), color="white", size=1.7, inherit.aes = FALSE, family="G")+ 
-  geom_text(aes(x=-1, y=4.5, label= "They made\n230 missions\nsince 1959"), color="white", size=2.2, family="G")+ 
+  geom_text(aes(x=-1, y=4.5, label= "They made\n230 missions\nsince 1961"), color="white", size=2.2, family="G")+ 
   geom_text(aes(x=-6.25, y=11.1, label= "64\nfemales"), color="white", size=2.8, inherit.aes = FALSE, family="G")+ 
   geom_text(aes(x=3, y=-3.65, label= "Gherman Titov\n&\nValentina Tereshkova\nwere the youngest\nto go on a mission:\n26 years"), color="white", size=2, family="G")+ 
   geom_text(aes(x=9.5, y=-3.6, label= "1.341.979\nhours\nthey spend\nin space"), color="white", size=2, family="G")+ 

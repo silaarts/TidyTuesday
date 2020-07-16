@@ -27,7 +27,7 @@ names(data)[4] <- "country"
 
 unique(data$harvest_year)
 
-#Calculate mountains (volcano's) based on pop5,pop10,pop30 & pop100
+#Calculate coffee per country
 data1 <- data %>%
   group_by(country)%>%
   mutate(mean_points=mean(total_cup_points))%>%

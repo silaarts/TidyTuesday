@@ -17,7 +17,7 @@ crop <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidyt
 #Change colname for ease of use
 colnames(crop)[6] <- "Maize"
 
-#Change two rownames for ease of use
+#Change rownames for ease of use
 crop$Entity[crop$Entity == "Bosnia and Herzegovina"] <- "Bosnia &\nHerzegovina"
 crop$Entity[crop$Entity == "Saint Vincent and the Grenadines"] <- "Saint Vincent\n&\nGrenadines"
 crop$Entity[crop$Entity == "United Arab Emirates"] <- "United Arab\nEmirates"
@@ -36,7 +36,7 @@ font_add_google("Calligraffitti", "P")
 font_add_google("Bad Script", "B")
 showtext_auto()
 
-#Make a flower
+#Make some corn
 p2 <- ggplot(data, aes(fill=Entity, alpha = Maize)) +
   #Corn
   geom_ellipse(aes(x0 = 0, y0 = 9, a = 7, b = 3, angle = pi / 2, m1 = 3), fill= "gold3",  color = "coral4") + 
@@ -89,10 +89,6 @@ legend <- ggplot(data) +
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     plot.margin = unit(c(1,1,1,1), "cm"))
-    
-
-#Run it
-legend
 
 #Create title
 title <- ggplot() +

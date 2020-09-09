@@ -9,8 +9,11 @@
 library(tidyverse)
 library(showtext)
 library(showtextdb)
-#library(ggforce)
+library(ggforce)
+library(ggtext)
+library(magick)
 library(cowplot)
+library(grid)
 
 #Read file
 friends_emotions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-08/friends_emotions.csv')

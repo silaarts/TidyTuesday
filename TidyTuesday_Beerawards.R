@@ -7,13 +7,14 @@ library(tidyverse)
 library(ggtext)
 library(cowplot)
 library(showtext)
+library(glue)
 library(showtextdb)
 library(wesanderson)
 
 #Read file
 data <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-10-20/beer_awards.csv')
 
-#Total golden models > 5
+#Make some information
 data1 <- data %>%
   filter(medal=="Gold")%>%
   group_by(year, state)%>%
@@ -22,14 +23,14 @@ data1 <- data %>%
   filter(year > 1999)%>%
   filter(count > 5)
 
-#Total golden medals per year
+#Get toal gold medals
 data2 <- data%>%
   filter(medal=="Gold" & year > 1999)%>%
   group_by(year)%>%
   mutate(count2 = n())%>%
   distinct(year, count2)
 
-#Total golden medals 2000-2020
+#Total medals
 data3 <- data%>%
   filter(year >1999)%>%
   filter(medal=="Gold")
@@ -42,7 +43,7 @@ showtext_auto()
 #Colors
 col <- wes_palette("IsleofDogs2", 8, type = "continuous")
 
-#Theme
+#Themes
 theme_sil <- theme_void()+
   theme(
     legend.position = "bottom",
@@ -72,7 +73,7 @@ p <- ggplot(data1, aes(x = year, y = count)) +
   geom_col(aes(fill=state)) + 
   labs(title=" - BEER AWARDS -",
        subtitle= "The Professional Judge Panel awards gold, silver or bronze medals <br> that are recognized around the world as symbols of brewing excellence.<br> These awards are among the most coveted in the industry and heralded by the <br> winning brewers in their national advertising. <br> Below the gold medals for US states <span style='color:#474439'>**(total)**</span> are displayed.<br> Individual states with specific years that include more than <br> 5 golden medals are also displayed.",
-       caption="Source: | Plot by @sil_aarts") +
+       caption="Source: Great American Beer Festival | Plot by @sil_aarts") +
   scale_fill_manual(values = col)+
   geom_text(data = data1, aes(x = year, y = 0, label = glue("{year}  ")), hjust=1, size = 1.8, colour="black", family="P") +
   #Add ticks
@@ -89,7 +90,6 @@ p <- ggplot(data1, aes(x = year, y = count)) +
 #Run it!
 p
 
-#GGplot2
 p2 <- ggplot(data2, aes(x = year, y = count2)) + 
   geom_col(width = 1, colour="#CEA912",  fill="#474439")+
   scale_y_reverse(breaks=c(0,40,80), position = "right")+

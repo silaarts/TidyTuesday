@@ -72,7 +72,7 @@ t <-
     bar_chart(value, width = width, fill = "#0000CD", background = "#e1e1e1")
   }),
   #Add some highlights for specific variable:
-  season = colDef(name = "Top # of times used in one season", align = "right", style = function(value) {
+  total_season = colDef(name = "Top # of times used in one season", align = "right", style = function(value) {
     if (value > 9) {color <- "green"} 
     else  {color <- "hsl(233, 9%, 87%)"}
     list(color = color)

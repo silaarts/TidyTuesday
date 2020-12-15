@@ -1,0 +1,110 @@
+---
+title: "TidyTuesday_14dec"
+author: "Sil Aarts"
+date: "12/13/2020"
+output:
+  html_document: default
+  word_document: default
+---
+
+```{r setup, echo=F, include=F, warnings=F, message=F}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(reactable)
+library(htmltools)
+
+ninja_warrior <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-12-15/ninja_warrior.csv')
+
+```
+
+```{r echo=F, warnings=F, message=F}
+#Total count
+ninja <- ninja_warrior %>%
+  group_by(obstacle_name) %>%
+  mutate(total = n())%>%
+  ungroup()%>%
+  group_by(season, obstacle_name)%>%
+  mutate(total_season = n())%>%
+  ungroup()%>%
+  group_by(obstacle_name, total)%>%
+  top_n(n=1)%>%
+  ungroup() %>%
+  select(obstacle_name, total, total_season)%>%
+  distinct()%>%
+  top_n(20, wt=total)
+
+```
+
+```{r echo=F, warnings=F, message=F}
+# Render a bar chart with a label on the left
+bar_chart <- function(label, width = "100%", height = "16px", fill = "#00bfc4", background = NULL) {
+  bar <- div(style = list(background = fill, width = width, height = height))
+  chart <- div(style = list(flexGrow = 1, marginLeft = "8px", background = background), bar)
+  div(style = list(display = "flex", alignItems = "center"), label, chart)
+}
+```
+
+
+```{r echo=F, warnings=F, message=F}
+options(reactable.theme = reactableTheme(
+  color = "hsl(233, 9%, 87%)",
+  backgroundColor = "rgb(0,0,0)",
+  borderColor = "rgb(192,192,192)",
+  stripedColor = "rgb(192,192,192)",
+  highlightColor = "66FFCC",
+  inputStyle = list(backgroundColor = "rgb(0, 0, 0)"),
+  selectStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+  pageButtonHoverStyle = list(backgroundColor = "hsl(233, 9%, 25%)"),
+  pageButtonActiveStyle = list(backgroundColor = "hsl(233, 9%, 28%)")
+))
+
+
+t <- 
+  reactable(
+  ninja,
+  columns = list(
+  #Make first column with name: different style
+  obstacle_name = colDef(name = "Obstacle", style = list(fontWeight = "bold", fontFamily = "Arial", fontStyle = "italic", fontSize="16px", align = "left")),
+  #Add a bar chart
+  total = colDef(name = "Total # of times", align = "left", cell = function(value) {
+    width <- paste0(value / max(ninja$total) * 100, "%")
+    bar_chart(value, width = width, fill = "#0000CD", background = "#e1e1e1")
+  }),
+  #Add some highlights for specific variable:
+  season = colDef(name = "Top # of times used in one season", align = "right", style = function(value) {
+    if (value > 9) {color <- "green"} 
+    else  {color <- "hsl(233, 9%, 87%)"}
+    list(color = color)
+  })
+  ),
+  #groupBy = c("category"), # > Group table 
+  defaultPageSize = 30,
+  style = list(fontFamily = "Arial", fontSize = "20px"),
+  defaultSorted = list(total = "desc"), # sort by variables
+  defaultColDef = colDef(
+    header = function(value) gsub(".", " ", value, fixed = TRUE),
+    headerStyle = list(fontWeight = "bold", fontSize = "18px"),
+    cell = function(value) format(value, nsmall = 1),
+    minWidth = 120),
+  outlined = F, 
+  borderless = T, #bordered=T
+  highlight = F
+)
+
+
+div(
+  " *** NINJA WARRIOR *** ", style = "text-align: center; 
+                  background-color: rgb(0,0,0); color: red; font-famil: Arial; font-size: xx-large",
+  div(
+  "Most used obstacles in all 10 seasons (10+ occurences are highlighted in green)", style = "text-align: center; 
+                  background-color: rgb(0,0,0); color: #0000CD; font-family: Trebuchet; font-style: italic;
+  font-size: 20px"),
+  t,
+  div(
+  "Source: Data.World & Sasukepedia | Table by @sil_aarts", style = "text-align: center; 
+                  background-color: rgb(0,0,0); color:red; font-size: 15px")
+)
+
+```
+
